@@ -1230,7 +1230,9 @@ def cmd_admin_logs_download(client: TalebookClient, args: argparse.Namespace) ->
 
 
 def subs(parser: argparse.ArgumentParser, dest: str) -> Any:
-    return parser.add_subparsers(dest=dest, required=True)
+    """Group parsers show their own help instead of failing when no subcommand is given."""
+    parser.set_defaults(help_parser=parser)
+    return parser.add_subparsers(dest=dest, metavar="COMMAND")
 
 
 def leaf(
@@ -1255,8 +1257,32 @@ def add_id(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--id", type=int, required=True, help="书籍或记录 ID")
 
 
+HELP_EPILOG = """\
+Environment Variables:
+  TALEBOOK_URL                  Talebook 地址，等价于 --site
+  TALEBOOK_USERNAME             登录用户名，等价于 --user
+  TALEBOOK_PASSWORD             登录密码，等价于 --password（推荐用环境变量传递）
+  TALEBOOK_NO_UPDATE_NOTIFIER   设为 1/true/yes/on 时关闭 _notice.update 提醒
+
+Quick Start:
+  export TALEBOOK_URL="https://books.example.com"
+  talebook-cli.py me status                        # 站点、身份与权限
+  talebook-cli.py books search --name 三体          # 搜索书籍，拿到书籍 ID
+  talebook-cli.py books show --id 123              # 查看详情与可用格式
+  talebook-cli.py books download --id 123 --format epub --output ./三体.epub
+
+  高风险命令（发送、管理写入、删除）先不加 --confirmed 运行，
+  CLI 只输出 confirmation.required 预览；向用户确认后再重跑并加上 --confirmed。
+"""
+
+
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(prog="talebook-cli.py", description="通过明确命令操作 Talebook 实例")
+    parser = argparse.ArgumentParser(
+        prog="talebook-cli.py",
+        description="通过明确命令操作 Talebook 实例",
+        epilog=HELP_EPILOG,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
     parser.add_argument("--site", help="Talebook 地址；无 scheme 时默认 HTTPS（环境变量 TALEBOOK_URL）")
     parser.add_argument("--user", help="Talebook 用户名（环境变量 TALEBOOK_USERNAME）")
     parser.add_argument("--password", help="Talebook 密码（环境变量 TALEBOOK_PASSWORD；环境变量更安全）")
@@ -1778,7 +1804,7 @@ def redact_sensitive_value(value: Any, *, field_name: str = "") -> Any:
 
 
 def sanitized_arguments(args: argparse.Namespace) -> dict[str, Any]:
-    hidden = {"handler", "password", "current_password", "new_password", "smtp_password"}
+    hidden = {"handler", "help_parser", "password", "current_password", "new_password", "smtp_password"}
     result: dict[str, Any] = {}
     for key, value in vars(args).items():
         if key in hidden or key.startswith("requires_") or key in {"confirmed", "risk"}:
@@ -1843,6 +1869,9 @@ def main(
     output = stdout or sys.stdout
     errors = stderr or sys.stderr
     env = environ if environ is not None else os.environ
+    if not hasattr(args, "handler"):
+        args.help_parser.print_help(output)
+        return EXIT_OK
     try:
         config = Config.from_sources(args, env)
         if args.risk in RISK_CONFIRMATION and not getattr(args, "confirmed", False):

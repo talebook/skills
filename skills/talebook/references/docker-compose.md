@@ -36,4 +36,4 @@ docker compose ps
 curl --fail-with-body http://127.0.0.1:8080/api/user/info
 ```
 
-完成后提供访问地址、Compose 文件和持久化数据目录。首次启动时打开站点，在浏览器完成初始化，再运行 `talebook-cli.py me status` 验证身份。
+完成后提供访问地址、Compose 文件和持久化数据目录。首次启动时打开站点，在浏览器完成初始化，再运行 `python3 scripts/talebook-cli.py me status` 验证身份。

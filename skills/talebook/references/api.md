@@ -18,10 +18,12 @@
 全局语法：
 
 ```bash
-python scripts/talebook-cli.py \
+python3 scripts/talebook-cli.py \
   [--site URL] [--user USER] [--password PASSWORD] [--timeout SECONDS] \
   <command...>
 ```
+
+不带子命令运行（`talebook-cli.py`、`talebook-cli.py books`、`talebook-cli.py admin settings`）会打印该层帮助并返回 0，可用于确认真实参数名。
 
 配置优先级：命令行参数高于环境变量。
 

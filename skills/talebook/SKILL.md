@@ -1,6 +1,11 @@
 ---
 name: talebook
+version: "1.0.0"
+display_name: "Talebook 操作助手"
+display_name_en: "Talebook Assistant"
 description: 通过 Talebook 原有 HTTP API 操作自托管的 Talebook 电子书库（Calibre + Vue）。覆盖搜索、浏览、上传、下载、收藏书籍，管理书架、阅读状态与 Kindle/推送设备，列出、查看或下载已发布有声书，使用 Legado 网络书源与远程书库，执行用户、书源、OPDS、设置、日志等管理员操作，以及用 Docker Compose 部署或升级实例。只要用户提到 Talebook、自己的书库或藏书站点、TALEBOOK_URL，或要在自托管书库里找书、传书、下书、推送到 Kindle、管理书源，就使用本技能，即使没有点名 Talebook。不适用于 Calibre 桌面端或其他第三方书库软件。
+description_zh: "通过 Talebook HTTP API 安全地浏览、操作、管理和部署自托管电子书库。"
+description_en: "Safely browse, operate, administer, and deploy self-hosted Talebook libraries through the Talebook HTTP API."
 ---
 
 # Talebook 操作助手

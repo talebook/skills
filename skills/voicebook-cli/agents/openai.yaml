@@ -1,0 +1,4 @@
+interface:
+  display_name: "有声书创作助手"
+  short_description: "创作多角色、多音色、富有互动感的有声书"
+  default_prompt: "把一本 EPUB 转成可审查的配音脚本，再生成多音色、富有互动感的分章节有声书。"
